@@ -17,6 +17,16 @@ class Customer {
     }
 }
 
+let name =
+    document.getElementById('name');
+let address =
+    document.getElementById('address');
+let salary =
+    document.getElementById('salary');
+let dob =
+    document.getElementById('datepicker');
+
+
 const displayAlert =()=>{
     let alert =
         document.getElementById('save_alert');
@@ -29,7 +39,18 @@ const displayAlert =()=>{
 const pushCustomer= async (customer)=>{
     if(customerDatabase.push(customer)){
         displayAlert();
+        clearFields();
     }
+}
+
+const clearFields=()=>{
+    name.value='';
+    address.value='';
+    salary.value='';
+    dob.value='';
+}
+const loadTable=()=>{
+
 }
 
 let customerDatabase = []; //['','']
@@ -57,23 +78,15 @@ const createUpdateCustomer = () => {
         document.getElementById('btnSaveUpdate')
             .innerHTML.includes('Save Customer')
     ){
-        let name =
-            document.getElementById('name').value;
-        let address =
-            document.getElementById('address').value;
-        let salary =
-            parseInt(document.getElementById('salary').value);
-        let dob =
-            document.getElementById('datepicker').value;
+
         let customer = new Customer(
             generateCustomerId(),
-            name,
-            address,
-            salary,
-            dob
+            name.value,
+            address.value,
+            parseInt(salary.value),
+            dob.value
         );
         pushCustomer(customer);
-        console.log(customer)
     }else{
 
     }
