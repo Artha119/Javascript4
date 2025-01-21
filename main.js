@@ -17,8 +17,19 @@ class Customer {
     }
 }
 
+const displayAlert =()=>{
+    let alert =
+        document.getElementById('save_alert');
+    alert.style.display='block';
+    setTimeout(()=>{
+        alert.style.display='none';
+    }, 3000)
+}
+
 const pushCustomer= async (customer)=>{
-    customerDatabase.push(customer);
+    if(customerDatabase.push(customer)){
+        displayAlert();
+    }
 }
 
 let customerDatabase = []; //['','']
@@ -42,30 +53,30 @@ function generateCustomerId() {
 }
 
 const createUpdateCustomer = () => {
-    if (true) {
-        if(
-            console.log(document.getElementById('btnSaveUpdate')
-                .innerHTML.includes('Save Customer'))
-        ){
-            let name =
-                document.getElementById('#name').value;
-            let address =
-                document.getElementById('#address').value;
-            let salary =
-                parseInt(document.getElementById('#salary').value);
-            let dob =
-                document.getElementById('#datepicker').value;
-            let customer = new Customer(
-                generateCustomerId(),
-                name,
-                address,
-                salary,
-                dob
-            );
-            pushCustomer(customer);
-        }
+    if(
+        document.getElementById('btnSaveUpdate')
+            .innerHTML.includes('Save Customer')
+    ){
+        let name =
+            document.getElementById('name').value;
+        let address =
+            document.getElementById('address').value;
+        let salary =
+            parseInt(document.getElementById('salary').value);
+        let dob =
+            document.getElementById('datepicker').value;
+        let customer = new Customer(
+            generateCustomerId(),
+            name,
+            address,
+            salary,
+            dob
+        );
+        pushCustomer(customer);
+        console.log(customer)
+    }else{
 
-    } else {
-        //update
     }
+
+
 }
