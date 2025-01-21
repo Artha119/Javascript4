@@ -12,11 +12,24 @@ class Customer {
         this.#salary = salary;
         this.#dob = dob;
     }
-    getCustomerId(){
+
+    getCustomerId() {
         return this.#id;
     }
+    getCustomerName() {
+        return this.#name;
+    }
+    getCustomerAddress() {
+        return this.#address;
+    }
+    getCustomerSalary() {
+        return this.#salary;
+    }
+    getCustomerDob() {
+        return this.#dob;
+    }
 }
-
+let id=undefined;
 let name =
     document.getElementById('name');
 let address =
@@ -27,29 +40,109 @@ let dob =
     document.getElementById('datepicker');
 
 
-const displayAlert =()=>{
+const displayAlert = () => {
     let alert =
         document.getElementById('save_alert');
-    alert.style.display='block';
-    setTimeout(()=>{
-        alert.style.display='none';
+    alert.style.display = 'block';
+    setTimeout(() => {
+        alert.style.display = 'none';
     }, 3000)
 }
 
-const pushCustomer= async (customer)=>{
-    if(customerDatabase.push(customer)){
+const pushCustomer = async (customer) => {
+    if (customerDatabase.push(customer)) {
         displayAlert();
         clearFields();
+        loadTable();
     }
 }
 
-const clearFields=()=>{
-    name.value='';
-    address.value='';
-    salary.value='';
-    dob.value='';
+const clearFields = () => {
+    name.value = '';
+    address.value = '';
+    salary.value = '';
+    dob.value = '';
 }
-const loadTable=()=>{
+const loadTable = () => {
+    let tableBody =
+        document.getElementById('table-body');
+
+    tableBody.innerHTML='';
+
+    for (const temp of customerDatabase) {
+        let tr =
+            document.createElement('tr');
+
+        tr.innerHTML=`
+            <td>
+                            <div class="t-outer">
+                                ${temp.getCustomerId()}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="t-outer">
+                                 ${temp.getCustomerName()}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="t-outer">
+                                 ${temp.getCustomerAddress()}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="t-outer">
+                                 ${temp.getCustomerSalary()}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="t-outer">
+                                 ${temp.getCustomerDob()}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="t-outer">
+                                <input type="button" onclick="readyToUpdate('${temp.getCustomerId()}')" value="Modify" class="btn btn-success">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="t-outer">
+                                <input type="button" onclick="deleteCustomer('${temp.getCustomerId()}')"" class="btn btn-danger" value="Remove">
+                            </div>
+                        </td>
+        `;
+        tableBody.appendChild(tr);
+    }
+}
+const setData=(data)=>{
+    id=data.getCustomerId();
+    name.value=data.getCustomerName();
+    address.value=data.getCustomerAddress();
+    salary.value=data.getCustomerSalary();
+    dob.value=data.getCustomerDob();
+    document.getElementById('btnSaveUpdate')
+        .innerHTML='Update Customer';
+}
+const readyToUpdate = (customerId)=>{
+    let selectedCustomer = customerDatabase.find((e)=>e.getCustomerId()==customerId);
+    if(!selectedCustomer){
+        alert('something went wrong...')
+        return;
+    }
+    setData(selectedCustomer);
+
+}
+
+const deleteCustomer = (customerId)=>{
+    if(confirm('Are you sure whether do you want to delete this customer?')){
+        let selectedCustomer = customerDatabase.find((e)=>e.getCustomerId()==customerId);
+        if(!selectedCustomer){
+            alert('something went wrong...')
+            return;
+        }
+        customerDatabase.splice(customerId,1);
+        loadTable();
+    }
+
 
 }
 
@@ -62,7 +155,7 @@ function generateCustomerId() {
     }
     let selectedData =
         customerDatabase[customerDatabase.length - 1];
-    if (selectedData) {
+    if (!selectedData) {
         return null;
     } else {
         let selectedLastId =
@@ -74,10 +167,10 @@ function generateCustomerId() {
 }
 
 const createUpdateCustomer = () => {
-    if(
+    if (
         document.getElementById('btnSaveUpdate')
             .innerHTML.includes('Save Customer')
-    ){
+    ) {
 
         let customer = new Customer(
             generateCustomerId(),
@@ -87,8 +180,26 @@ const createUpdateCustomer = () => {
             dob.value
         );
         pushCustomer(customer);
-    }else{
-
+    } else if (
+        document.getElementById('btnSaveUpdate')
+            .innerHTML.includes('Update Customer')
+        && id
+    ) {
+        let selectedIndex =
+            customerDatabase.findIndex((selectedData)=>selectedData
+                .getCustomerId()==id);
+        if(selectedIndex!=-1){
+            customerDatabase[selectedIndex] = new Customer(
+                id,
+                name.value,address.value,
+                Number.parseInt(salary.value),
+                dob.value
+            );
+            clearFields();
+            loadTable();
+            document.getElementById('btnSaveUpdate')
+                .innerHTML='Save Customer';
+        }
     }
 
 
